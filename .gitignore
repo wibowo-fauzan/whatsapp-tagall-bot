@@ -1,0 +1,25 @@
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+
+# WhatsApp session data (LocalAuth)
+.session/
+.auth/
+.wwebjs_auth/
+.wwebjs_cache/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor specific
+.vscode/
+.idea/
