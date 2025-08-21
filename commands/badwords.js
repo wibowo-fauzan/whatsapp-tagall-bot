@@ -4,7 +4,7 @@
 const BADWORDS = [
     'anjing', 'kontol', 'babi', 'memek', 'ngentot', 'bangsat', 'jembut',
     'tai', 'kntl', 'meki', 'pler', 'peler', 'titit', 'pepek', 'kampang',
-    'asu', 'keparat', 'goblog', 'goblok', 'tolol', 'idiot', 'brengsek',
+    'keparat', 'goblog', 'goblok', 'tolol', 'idiot', 'brengsek',
     'monyet', 'setan', 'kunyuk', 'kimak', 'sundal', 'pelacur', 'lonte',
     'hencet', 'pantek', 'bego', 'bodoh', 'anjir', 'anjirr'
 ];
