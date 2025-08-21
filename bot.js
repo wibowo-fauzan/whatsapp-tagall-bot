@@ -1,6 +1,10 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
+// Import command handler
+const handleTag = require('./commands/tag');
+const handleSticker = require('./commands/sticker');
+
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
@@ -22,67 +26,17 @@ client.on('message', async msg => {
     console.log(`[DEBUG] Pesan diterima: "${msg.body}" dari chat ID: ${msg.from}`);
 
     try {
-        // Cek apakah pesan diawali @ping
-        if (!msg.body || !msg.body.trim().toLowerCase().startsWith('@ping')) {
-            console.log('[DEBUG] Bukan perintah @ping, dilewati.');
-            return;
+        const command = msg.body?.trim().toLowerCase().split(/\s+/)[0];
+
+        if (command === '.tag') {
+            return handleTag(client, msg);
         }
 
-        console.log('[DEBUG] Perintah @ping terdeteksi.');
-
-        // Ambil teks setelah @ping (jika ada)
-        const parts = msg.body.trim().split(/\s+/);
-        parts.shift(); // hapus "@ping"
-        const extraText = parts.join(" ").trim(); // sisanya jadi tambahan text
-
-        // Auto-reply langsung ke pesan yang kirim @ping
-        await msg.reply('✅ Hi!, Perintah @ping diterima, Bot Fauzan Berjalan . . . ', msg.from, { quotedMessageId: msg.id._serialized });
-
-        const chat = await msg.getChat();
-        if (!chat.isGroup) {
-            console.log('[DEBUG] Chat bukan grup.');
-            return msg.reply('❌ Perintah ini hanya bisa dijalankan di grup.');
+        if (command === '.sticker') {
+            return handleSticker(msg);
         }
 
-        // Ambil semua peserta grup
-        let participants = chat.participants || [];
-        console.log(`[DEBUG] Jumlah peserta ditemukan: ${participants.length}`);
-
-        if (!participants.length) {
-            return msg.reply('⚠️ Tidak ada peserta ditemukan di grup.');
-        }
-
-        let text = '*📢 Attention semua anggota:* \n';
-        const mentions = [];
-
-        for (const p of participants) {
-            try {
-                const contact = await client.getContactById(p.id._serialized);
-                if (!contact) {
-                    console.warn(`[WARN] Tidak bisa ambil contact ID: ${p.id._serialized}`);
-                    continue;
-                }
-                mentions.push(contact);
-                text += `@${contact.id.user} `;
-            } catch (err) {
-                console.error(`[ERROR] Gagal ambil contact ID: ${p.id._serialized}`, err);
-            }
-        }
-
-        // Kalau ada text tambahan, tambahkan di bawah mention
-        if (extraText) {
-            text += `\n\n${extraText}`;
-        }
-
-        console.log('[DEBUG] Mentions siap:', mentions.map(m => m.id._serialized));
-
-        if (!mentions.length) {
-            return msg.reply('⚠️ Tidak bisa mention siapapun. Bot mungkin tidak punya akses kontak.');
-        }
-
-        await chat.sendMessage(text, { mentions });
-        console.log(`[BOT] Berhasil mention ${mentions.length} anggota di grup "${chat.name}".`);
-
+        console.log('[DEBUG] Bukan perintah .tag atau .sticker, dilewati.');
     } catch (err) {
         console.error('[ERROR] Kesalahan umum:', err);
         msg.reply('❌ Terjadi kesalahan saat memproses perintah.');
