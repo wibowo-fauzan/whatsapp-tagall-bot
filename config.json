@@ -1,0 +1,9 @@
+{
+  "sticker": {
+    "defaultPack": "StickerKu",
+    "defaultAuthor": "BotKu"
+  },
+  "paths": {
+    "tmpDir": "./tmp"
+  }
+}
